@@ -6,6 +6,8 @@ import { LoginPage } from './pages/LoginPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { SignupPage } from './pages/SignupPage'
 import { SpacePage } from './pages/SpacePage'
+import { Toaster } from './components/ui/sonner'
+import { TooltipProvider } from './components/ui/tooltip'
 
 function ProtectedRoute() {
   return useAuthStore((state) => state.token) ? <Outlet /> : <Navigate to="/login" replace />
@@ -14,16 +16,19 @@ function ProtectedRoute() {
 export default function App() {
   const token = useAuthStore((state) => state.token)
   return (
-    <Routes>
-      <Route path="/login" element={token ? <Navigate to="/" replace /> : <LoginPage />} />
-      <Route path="/signup" element={token ? <Navigate to="/" replace /> : <SignupPage />} />
-      <Route element={<ProtectedRoute />}>
-        <Route element={<AppShell />}>
-          <Route index element={<DashboardPage />} />
-          <Route path="spaces/:spaceId" element={<SpacePage />} />
+    <TooltipProvider>
+      <Routes>
+        <Route path="/login" element={token ? <Navigate to="/" replace /> : <LoginPage />} />
+        <Route path="/signup" element={token ? <Navigate to="/" replace /> : <SignupPage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AppShell />}>
+            <Route index element={<DashboardPage />} />
+            <Route path="spaces/:spaceId" element={<SpacePage />} />
+          </Route>
         </Route>
-      </Route>
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+      <Toaster />
+    </TooltipProvider>
   )
 }

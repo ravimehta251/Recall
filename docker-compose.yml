@@ -24,10 +24,7 @@ services:
       DB_URL: jdbc:postgresql://postgres:5432/recall
       DB_USER: recall
       DB_PASSWORD: ${DB_PASSWORD:-recall}
-      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
-      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://ollama:11434}
-      OLLAMA_CHAT_MODEL: ${OLLAMA_CHAT_MODEL:-llama3.2}
-      OLLAMA_EMBEDDING_MODEL: ${OLLAMA_EMBEDDING_MODEL:-nomic-embed-text}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
     ports:
       - "8080:8080"
     depends_on:
@@ -41,14 +38,5 @@ services:
     depends_on:
       - backend
 
-  ollama:
-    image: ollama/ollama:latest
-    profiles: ["ollama"]
-    volumes:
-      - recall_ollama:/root/.ollama
-    ports:
-      - "11434:11434"
-
 volumes:
   recall_postgres:
-  recall_ollama:

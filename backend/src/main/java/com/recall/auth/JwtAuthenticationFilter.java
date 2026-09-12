@@ -20,6 +20,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserRepository userRepository;
 
+    /**
+     * Skip this filter on async dispatches. The SSE endpoint uses Tomcat's
+     * async context which re-dispatches on a new thread. We must not re-run
+     * JWT validation there — the SecurityContext is already populated on the
+     * original request thread and propagated via DelegatingSecurityContextExecutor.
+     */
+    @Override
+    protected boolean shouldNotFilterAsyncDispatch() {
+        return true;
+    }
+
+    @Override
+    protected boolean shouldNotFilterErrorDispatch() {
+        return true;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {

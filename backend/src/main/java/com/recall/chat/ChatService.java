@@ -8,10 +8,12 @@ import com.recall.common.exception.ApiException;
 import com.recall.knowledgespace.KnowledgeSpace;
 import com.recall.knowledgespace.KnowledgeSpaceService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.ai.vectorstore.filter.FilterExpressionBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatService {
@@ -84,12 +87,19 @@ public class ChatService {
             session.setTitle(titleFrom(content));
         }
 
+        var filter = new FilterExpressionBuilder()
+                .eq("knowledge_space_id", session.getKnowledgeSpace().getId().toString())
+                .build();
+
         List<Document> relevant = vectorStore.similaritySearch(SearchRequest.builder()
                 .query(content)
                 .topK(5)
-                .similarityThreshold(0.65)
-                .filterExpression("knowledge_space_id == '" + session.getKnowledgeSpace().getId() + "'")
+                .similarityThresholdAll()
+                .filterExpression(filter)
                 .build());
+
+        log.debug("Vector search for space {} query '{}' → {} results",
+                session.getKnowledgeSpace().getId(), content, relevant.size());
 
         return new StreamContext(session, buildPrompt(content, history, relevant), citations(relevant));
     }
@@ -104,11 +114,15 @@ public class ChatService {
                 .doOnNext(response::append)
                 .map(token -> event("token", Map.of("text", token)))
                 .doOnComplete(() -> messageWriter.saveAssistant(
-                    context.session(), response.toString(), json(context.citations())));
+                    context.session(), response.toString(), json(context.citations())))
+                .onErrorResume(ex -> Flux.just(
+                    event("error", Map.of("message", "AI service unavailable: " + ex.getMessage()))));
 
-        return tokens.concatWithValues(
-                event("citations", context.citations()),
-                event("done", Map.of()));
+        // Always append citations + done, even after an error event,
+        // so the frontend can clean up the streaming state.
+        return tokens
+                .concatWith(Flux.just(event("citations", context.citations())))
+                .concatWith(Flux.just(event("done", Map.of())));
     }
 
     private ChatSession requireOwnedSession(UUID sessionId) {

@@ -1,20 +1,101 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap');
 @import "tailwindcss";
 
-:root {
-  font-family: 'DM Sans', sans-serif;
-  color: #1c2822;
-  background: #f3f2ec;
-  font-synthesis: none;
-  --ink: #1c2822;
-  --muted: #68736d;
-  --paper: #fbfaf6;
-  --line: #d9dcd5;
-  --green: #1e6b50;
-  --green-dark: #14513d;
-  --mint: #dcebe3;
-  --coral: #d66a4b;
-  --yellow: #e8bf63;
+@plugin "tailwindcss-animate";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-sans: 'DM Sans', sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+@layer base {
+  :root {
+    font-family: 'DM Sans', sans-serif;
+    color: #1c2822;
+    background: #f3f2ec;
+    font-synthesis: none;
+
+    --background: #f3f2ec;
+    --foreground: #1c2822;
+
+    --card: #fbfaf6;
+    --card-foreground: #1c2822;
+
+    --popover: #fbfaf6;
+    --popover-foreground: #1c2822;
+
+    --primary: #1e6b50;
+    --primary-foreground: #ffffff;
+
+    --secondary: #dcebe3;
+    --secondary-foreground: #14513d;
+
+    --muted: #e9ebe5;
+    --muted-foreground: #68736d;
+
+    --accent: #dcebe3;
+    --accent-foreground: #14513d;
+
+    --destructive: #d66a4b;
+    --destructive-foreground: #ffffff;
+
+    --border: #d9dcd5;
+    --input: #d9dcd5;
+    --ring: #1e6b50;
+
+    --radius: 0.5rem;
+
+    --ink: #1c2822;
+    --paper: #fbfaf6;
+    --line: #d9dcd5;
+    --green: #1e6b50;
+    --green-dark: #14513d;
+    --mint: #dcebe3;
+    --coral: #d66a4b;
+    --yellow: #e8bf63;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
 
 * { box-sizing: border-box; }

@@ -11,6 +11,7 @@ export type StreamHandlers = {
   onToken: (text: string) => void
   onCitations: (citations: Citation[]) => void
   onDone: () => void
+  onError?: (message: string) => void
 }
 
 export function parseSseBlock(block: string, handlers: StreamHandlers) {
@@ -25,6 +26,10 @@ export function parseSseBlock(block: string, handlers: StreamHandlers) {
   if (event === 'token') handlers.onToken(payload.text)
   if (event === 'citations') handlers.onCitations(payload)
   if (event === 'done') handlers.onDone()
+  if (event === 'error') {
+    handlers.onDone() // stop the spinner
+    handlers.onError?.(payload.message ?? 'Stream error')
+  }
 }
 
 export async function streamMessage(sessionId: string, content: string, handlers: StreamHandlers) {

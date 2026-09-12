@@ -70,7 +70,10 @@ public class DocumentService {
     public void delete(UUID spaceId, UUID documentId) {
         spaces.requireOwned(spaceId);
         Document document = requireInSpace(documentId, spaceId);
-        vectorStore.delete("document_id == '" + documentId + "'");
+        var filter = new org.springframework.ai.vectorstore.filter.FilterExpressionBuilder()
+                .eq("document_id", documentId.toString())
+                .build();
+        vectorStore.delete(filter);
         documents.delete(document);
     }
 

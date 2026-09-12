@@ -19,26 +19,19 @@ spring:
     open-in-view: false
   ai:
     model:
-      chat: ${AI_PROVIDER:azure-openai}
-      embedding: ${AI_PROVIDER:azure-openai}
+      chat: azure-openai
+      embedding: azure-openai
     azure:
       openai:
         endpoint: ${AZURE_OPENAI_ENDPOINT:}
         api-key: ${AZURE_OPENAI_API_KEY:}
         chat:
           options:
-            deployment-name: ${AZURE_OPENAI_CHAT_DEPLOYMENT:gpt-4o-mini}
+            deployment-name: ${AZURE_OPENAI_CHAT_DEPLOYMENT:gpt-5.6-luna}
+            temperature: 1.0
         embedding:
           options:
             deployment-name: ${AZURE_OPENAI_EMBEDDING_DEPLOYMENT:text-embedding-3-small}
-    ollama:
-      base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
-      chat:
-        options:
-          model: ${OLLAMA_CHAT_MODEL:llama3.2}
-      embedding:
-        options:
-          model: ${OLLAMA_EMBEDDING_MODEL:nomic-embed-text}
     vectorstore:
       pgvector:
         initialize-schema: true
@@ -52,7 +45,7 @@ recall:
   jwt:
     secret: ${JWT_SECRET:change-me-to-a-strong-secret-at-least-32-bytes}
     expiration: ${JWT_EXPIRATION:86400000}
-  cors-origin: ${CORS_ORIGIN:http://localhost:5173}
+  cors-origin: ${CORS_ORIGIN:http://localhost:3000}
 
 springdoc:
   swagger-ui:

@@ -1,5 +1,9 @@
 import { useState, type FormEvent } from 'react'
-import { X } from 'lucide-react'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog'
+import { Button } from '../ui/button'
+import { Input } from '../ui/input'
+import { Label } from '../ui/label'
+import { Textarea } from '../ui/textarea'
 
 type Props = {
   saving: boolean
@@ -10,24 +14,59 @@ type Props = {
 export function CreateSpaceModal({ saving, onClose, onCreate }: Props) {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
+  
   const submit = async (event: FormEvent) => {
     event.preventDefault()
     await onCreate(name.trim(), description.trim())
   }
 
   return (
-    <div className="modal-backdrop" role="presentation" onMouseDown={onClose}>
-      <section className="modal" role="dialog" aria-modal="true" aria-labelledby="space-dialog-title" onMouseDown={(event) => event.stopPropagation()}>
-        <div className="modal-header">
-          <div><span className="eyebrow">New collection</span><h2 id="space-dialog-title">Create a knowledge space</h2></div>
-          <button className="icon-button" aria-label="Close" onClick={onClose}><X size={18} /></button>
-        </div>
-        <form onSubmit={submit} className="form-stack">
-          <label>Name<input autoFocus required maxLength={100} value={name} onChange={(event) => setName(event.target.value)} placeholder="Product research" /></label>
-          <label>Description<textarea rows={3} maxLength={500} value={description} onChange={(event) => setDescription(event.target.value)} placeholder="Notes, briefs, and customer interviews" /></label>
-          <div className="modal-actions"><button type="button" className="button secondary" onClick={onClose}>Cancel</button><button className="button primary" disabled={saving || !name.trim()}>{saving ? 'Creating...' : 'Create space'}</button></div>
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-[520px]">
+        <form onSubmit={submit}>
+          <DialogHeader className="mb-4">
+            <span className="text-[11px] font-bold uppercase tracking-widest text-primary text-left">New collection</span>
+            <DialogTitle className="text-2xl font-serif text-left">Create a knowledge space</DialogTitle>
+            <DialogDescription className="sr-only">
+              Enter the name and description for your new knowledge space.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-6 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="name">Name</Label>
+              <Input
+                id="name"
+                autoFocus
+                required
+                maxLength={100}
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                placeholder="Product research"
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="description">Description</Label>
+              <Textarea
+                id="description"
+                rows={3}
+                maxLength={500}
+                value={description}
+                onChange={(event) => setDescription(event.target.value)}
+                placeholder="Notes, briefs, and customer interviews"
+                className="resize-none"
+              />
+            </div>
+          </div>
+          <DialogFooter className="mt-6">
+            <Button type="button" variant="outline" onClick={onClose} disabled={saving}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={saving || !name.trim()}>
+              {saving ? 'Creating...' : 'Create space'}
+            </Button>
+          </DialogFooter>
         </form>
-      </section>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 }
