@@ -1,0 +1,76 @@
+# ========================
+# Environment & Secrets
+# ========================
+.env
+backend/.env
+!.env.example
+!backend/.env.example
+
+# ========================
+# Build Outputs
+# ========================
+backend/target/
+frontend/dist/
+frontend/build/
+
+# ========================
+# Dependencies
+# ========================
+frontend/node_modules/
+node_modules/
+
+# ========================
+# IDE & Editor Files
+# ========================
+.idea/
+**/.idea/
+*.iml
+.vscode/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# ========================
+# Logs
+# ========================
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ========================
+# OS Generated Files
+# ========================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ========================
+# Documentation (non-README)
+# Not needed in deployment
+# ========================
+API_SPEC.md
+ARCHITECTURE.md
+FRONTEND.md
+PROJECT_PROMPT.md
+*.spec.md
+*.design.md
+
+# ========================
+# Misc Dev Artifacts
+# ========================
+*.class
+*.jar
+*.war
+*.ear
+*.tmp
+*.bak
+*.swp
+*~
